@@ -1,12 +1,9 @@
 import React, {Component} from 'react';
 import {
-    createStackNavigator,
-    createMaterialTopTabNavigator,
     createBottomTabNavigator,
-    createSwitchNavigator,
-    createAppContainer
+    createAppContainer,
+    BottomTabBar
 } from "react-navigation"
-import {Platform, StyleSheet, Text, View} from 'react-native';
 import PopularPage from "../page/PopularPage";
 import TrendingPage from "../page/TrendingPage";
 import FavoritePage from "../page/FavoritePage";
@@ -15,7 +12,9 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import Entypo from 'react-native-vector-icons/Entypo'
 import NavigationUtil from "../navigator/NavigationUtil";
-import {BottomTabBar} from "react-navigation-tabs"
+// import {BottomTabBar} from "react-navigation-tabs"
+import {connect} from 'react-redux'
+
 
 const TABS = { // 配置路由页面
     PopularPage: {
@@ -72,18 +71,22 @@ const TABS = { // 配置路由页面
     }
 }
 type Props = {};
-export default class DynamicTabNavigator extends Component<Props> {
+class DynamicTabNavigator extends Component<Props> {
     constructor(props) {
         super(props);
         console.disableYellowBox = true; //　禁用警告信息
     }
     _tabNavigator() {
-        // return createAppContainer(createBottomTabNavigator())
+        if (this.Tabs) {
+            return this.Tabs;
+        }
         const {PopularPage, TrendingPage, FavoritePage, MyPage} = TABS;
         const tabs = {PopularPage, TrendingPage, FavoritePage, MyPage} // 根据需要定制显示tab
         // PopularPage.navigationOptions.tabBarLabel = '最新';
-        return createAppContainer(createBottomTabNavigator(tabs, {
-            tabBarComponent: TabBarComponent
+        return this.Tabs = createAppContainer(createBottomTabNavigator(tabs, {
+            tabBarComponent: props => {
+                return <TabBarComponent theme={this.props.theme} {...props}/>
+            }
         }))
     }
     render() {
@@ -106,36 +109,26 @@ class TabBarComponent extends React.Component{
     }
     render() {
         // routes是路由数组， index是索引
-        const {routes, index} = this.props.navigation.state;
-        if (routes[index].params) {
-            const {theme} = routes[index].params;
-            // 以最新的时间为主，放置被其他tab之前的修改覆盖掉？不明白
-            if (theme && theme.updateTime > this.theme.updateTime) {
-                this.theme = theme;
-            }
-        }
+        // const {routes, index} = this.props.navigation.state;
+        // if (routes[index].params) {
+        //     const {theme} = routes[index].params;
+        //     if (theme && theme.updateTime > this.theme.updateTime) {
+        //         this.theme = theme;
+        //     }
+        // }
         return <BottomTabBar
             {...this.props}
-            activeTintColor={this.theme.tintColor || this.props.activeTintColor}
+            activeTintColor={this.props.theme}
+            // activeTintColor={this.theme.tintColor || this.props.activeTintColor}
         />
     }
 }
 
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-        backgroundColor: '#F5FCFF',
-    },
-    welcome: {
-        fontSize: 20,
-        textAlign: 'center',
-        margin: 10,
-    },
-    instructions: {
-        textAlign: 'center',
-        color: '#333333',
-        marginBottom: 5,
-    },
+const mapStateToProps = state => ({
+    theme: state.theme.theme, // 第一个theme 表示reducer 中的theme对象,第二个theme,是theme对象中的theme字段
+    // 将state中的theme关联到props中的theme
 });
+console.log("DynamicTabNavigator:", connect(mapStateToProps)(DynamicTabNavigator))
+// export default connect(mapStateToProps)(DynamicTabNavigator);
+
+
