@@ -8,4 +8,4 @@ import {createAppContainer} from 'react-navigation'
 import {name as appName} from './app.json';
 import App from './js/App'
 
-AppRegistry.registerComponent(appName, () => createAppContainer(App));
+AppRegistry.registerComponent(appName, () => App);

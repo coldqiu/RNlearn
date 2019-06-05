@@ -12,8 +12,6 @@ const navState = RootNavigator.router.getStateForAction(RootNavigator.router.get
 const navReducer = (state = navState, action) => {
     const nextState = RootNavigator.router.getStateForAction(action, state);
     // 如果`nextState`为null或未定义，只需返回原始`state`
-    console.log("nextState", nextState);
-    console.log("RootNavigator.router", RootNavigator.router)
     return nextState || state;
 };
 

@@ -1,47 +1,44 @@
-import React, {Component} from 'react';
-import {
-    createStackNavigator,
-    createMaterialTopTabNavigator,
-    createBottomTabNavigator,
-    createSwitchNavigator,
-    createAppContainer
-} from "react-navigation"
-import {Platform, StyleSheet, Text, View} from 'react-native';
-import PopularPage from "./PopularPage";
-import TrendingPage from "./TrendingPage";
-import FavoritePage from "./FavoritePage";
-import MyPage from "./MyPage";
-import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
-import Ionicons from 'react-native-vector-icons/Ionicons'
-import Entypo from 'react-native-vector-icons/Entypo'
+import React, {Component} from 'react'
 import NavigationUtil from "../navigator/NavigationUtil";
 import DynamicTabNavigator from '../navigator/DynamicTabNavigator'
+import {BackHandler} from 'react-native'
+import {connect} from 'react-redux'
+import {NavigationActions} from 'react-navigation'
 
 type Props = {};
-export default class HomePage extends Component<Props> {
-
+class HomePage extends Component<Props> {
+    // 设置Android 物理返回键的操作
+    componentDidMount() {
+        BackHandler.addEventListener("hardwareBackPress", this.onBackPress)
+    }
+    componentWillUnmount() {
+        BackHandler.removeEventListener("hardwareBackPress", this.onBackPress)
+    }
+    onBackPress = () => {
+        console.log("返回键");
+        const {dispatch, nav} = this.props; // nav 来自/js/reducer/index.js
+        if (nav.routes[1].index === 0) { // MainMainNavigator 不处理
+            return false; // routes[0] 是InitNavigator, routes[1] 是MainNavigator
+        }
+        dispatch(NavigationActions.back());
+        return true;
+    }
     render() {
         // 在NavigationUtil中使用静态属性保存 BottomTabNavigator
         NavigationUtil.navigation = this.props.navigation;
-        return <DynamicTabNavigator />
+        return <DynamicTabNavigator/>
     }
 }
 
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-        backgroundColor: '#F5FCFF',
-    },
-    welcome: {
-        fontSize: 20,
-        textAlign: 'center',
-        margin: 10,
-    },
-    instructions: {
-        textAlign: 'center',
-        color: '#333333',
-        marginBottom: 5,
-    },
+const mapStateToProps = state => ({
+    nav: state.nav // 订阅/js/reducer/index.js 中的store.state.nav
 });
+
+// const mapDispatchToProps = dispatch => ({
+//     onThemeChange: theme => dispatch(action.onThemeChange(theme))
+// });
+
+// export default connect(mapStateToProps, mapDispatchToProps)(TrendingPage)
+export default connect(mapStateToProps)(HomePage);
+
+
