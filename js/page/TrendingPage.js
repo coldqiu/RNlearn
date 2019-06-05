@@ -36,7 +36,7 @@ const mapDispatchToProps = dispatch => ({
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(TrendingPage)
-console.log("connect", connect(mapStateToProps, mapDispatchToProps)(TrendingPage));
+// console.log("connect", connect(mapStateToProps, mapDispatchToProps)(TrendingPage));
 
 
 

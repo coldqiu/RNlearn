@@ -1,11 +1,10 @@
-import {createStackNavigator, createSwitchNavigator,} from "react-navigation"
+import {createStackNavigator, createSwitchNavigator, createAppContainer} from "react-navigation"
 import WelcomePage from '../page/WelcomePage'
 import HomePage from '../page/HomePage'
 import DetailPage from '../page/DetailPage'
 import {connect} from 'react-redux'
 import {createReactNavigationReduxMiddleware, createReduxContainer} from 'react-navigation-redux-helpers'
 export const rootCom = 'Init'; // 设置跟路由
-
 const InitNavigator = createStackNavigator({
     WelcomePage: {
         screen: WelcomePage,
@@ -37,7 +36,7 @@ export const RootNavigator =  createSwitchNavigator({
     defaultNavigationOptions: {
         header: null, // 禁用 StackNavigator的 Navigation Bar
     }
-})
+});
 
 /**
  * 1.初始化react-navigation与redux的中间件，
@@ -47,8 +46,9 @@ export const RootNavigator =  createSwitchNavigator({
  * @type {Middleware}
  */
 export const middleware = createReactNavigationReduxMiddleware(
+    state => state.nav,
     'root',
-    state => state.nav
+
 );
 
 /**
@@ -71,7 +71,4 @@ const mapStateToProps = state => ({
  */
 export default connect(mapStateToProps)(AppWithNavigationState);
 
-(() => {
-    console.log("connect::AppNavigators", connect(mapStateToProps)(AppWithNavigationState))
-})()
 

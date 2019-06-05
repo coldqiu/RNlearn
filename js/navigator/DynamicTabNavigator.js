@@ -128,7 +128,7 @@ const mapStateToProps = state => ({
     theme: state.theme.theme, // 第一个theme 表示reducer 中的theme对象,第二个theme,是theme对象中的theme字段
     // 将state中的theme关联到props中的theme
 });
-console.log("DynamicTabNavigator:", connect(mapStateToProps)(DynamicTabNavigator))
-// export default connect(mapStateToProps)(DynamicTabNavigator);
+// console.log("DynamicTabNavigator:", connect(mapStateToProps)(DynamicTabNavigator))
+export default connect(mapStateToProps)(DynamicTabNavigator);
 
 
