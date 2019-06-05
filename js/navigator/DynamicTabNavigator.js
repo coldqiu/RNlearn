@@ -11,7 +11,6 @@ import MyPage from "../page/MyPage";
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import Entypo from 'react-native-vector-icons/Entypo'
-import NavigationUtil from "../navigator/NavigationUtil";
 // import {BottomTabBar} from "react-navigation-tabs"
 import {connect} from 'react-redux'
 
@@ -78,6 +77,7 @@ class DynamicTabNavigator extends Component<Props> {
     }
     _tabNavigator() {
         if (this.Tabs) {
+            // state 改变了 this.Tabs 也不不重新渲染
             return this.Tabs;
         }
         const {PopularPage, TrendingPage, FavoritePage, MyPage} = TABS;
@@ -128,7 +128,7 @@ const mapStateToProps = state => ({
     theme: state.theme.theme, // 第一个theme 表示reducer 中的theme对象,第二个theme,是theme对象中的theme字段
     // 将state中的theme关联到props中的theme
 });
-// console.log("DynamicTabNavigator:", connect(mapStateToProps)(DynamicTabNavigator))
+
 export default connect(mapStateToProps)(DynamicTabNavigator);
 
 
