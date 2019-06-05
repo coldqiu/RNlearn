@@ -10,6 +10,21 @@ export default class DataStoreDemoPage extends Component<Props> {
         this.state = {
             showText: ''
         }
+        this.dataStore = new DataStore();
+    }
+    loadData() {
+        let url =  `https://api.github.com/search/repositories?q=${this.searchKey}`
+        this.dataStore.fetchData(url)
+            .then(data => {
+                let showData = `初次数据加载的时间： ${new Date(data.timestamp)}\n
+                ${JSON.stringify(data.data)}`
+                this.setState({
+                    showText: showData
+                })
+            })
+            .catch((error) => {
+                error && console.log(error.toString());
+            })
     }
     render() {
         return (
@@ -18,7 +33,7 @@ export default class DataStoreDemoPage extends Component<Props> {
                 <View style={styles.input_container}>
                     <TextInput style={styles.input}
                                onChangeText={text => {
-
+                                   this.searchKey = text;
                                }}
                     />
                     <Button
@@ -28,6 +43,9 @@ export default class DataStoreDemoPage extends Component<Props> {
                         }}
                     />
                 </View>
+                <Text>
+                    {this.state.showText}
+                </Text>
             </View>
         );
     }
@@ -35,9 +53,9 @@ export default class DataStoreDemoPage extends Component<Props> {
 
 const styles = StyleSheet.create({
     container: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
+        // flex: 1,
+        // justifyContent: 'center',
+        // alignItems: 'center',
         backgroundColor: '#F5FCFF',
     },
     welcome: {
@@ -50,4 +68,10 @@ const styles = StyleSheet.create({
         color: '#333333',
         marginBottom: 5,
     },
+    input: {
+        height: 60,
+        borderColor: 'red',
+        borderWidth: 1,
+        marginRight: 10,
+    }
 });

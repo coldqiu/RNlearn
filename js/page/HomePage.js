@@ -34,7 +34,6 @@ const mapStateToProps = state => ({
 })
 
 
-});
 
 // const mapDispatchToProps = dispatch => ({
 //     onThemeChange: theme => dispatch(action.onThemeChange(theme))

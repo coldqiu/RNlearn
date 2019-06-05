@@ -5,7 +5,9 @@ export default class DataStore {
         return new Promise((resolve, reject) => {
             this.fetchLocalData(url).
             then((wrapData) => {
+                console.log("wrapData:", wrapData);
                 if (wrapData && DataStore.checkTimestampValid(wrapData.timestamp)) {
+                    console.log("wrapData:", wrapData);
                     resolve(wrapData);
                 } else {
                     this.fetchNetData(url)
@@ -42,10 +44,10 @@ export default class DataStore {
      */
     fetchLocalData(url) {
         return new Promise((resolve, reject) => {
-            AsyncStorage.getItem(url, (err, result) => {
+            AsyncStorage.getItem(url, (error, result) => {
                 if (!error) {
                     try {
-                        resolve(JSON.stringify(result));
+                        resolve(JSON.parse(result));
                     } catch (e) {
                         reject(e);
                         console.error(e);
@@ -94,6 +96,7 @@ export default class DataStore {
         if (currentDate.getMonth() !== targetDate.getMonth()) return false;
         if (currentDate.getDate() !== targetDate.getDate()) return false;
         if (currentDate.getHours() - targetDate.getHours() > 4) return false;
+        // if (currentDate.getHours() - targetDate.getHours() > 4) return false;//有效期4个小时
         return true;
     }
 }

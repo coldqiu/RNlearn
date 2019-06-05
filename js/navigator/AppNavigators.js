@@ -88,7 +88,5 @@ const mapStateToProps = state => ({
  */
 export default connect(mapStateToProps)(AppWithNavigationState);
 
-<<<<<<< HEAD
 
-=======
->>>>>>> 04492fd4871cf07aec34d2931570acaf998eb9dc
+
