@@ -11,12 +11,10 @@ const logger = store => next => action => {
         console.log('dispatching', action);
     }
     const result = next(action);
-    console.log("nextState", store.getState());
 }
 
 const middlewares = [
     middleware,
-    logger,
     thunk,
 ];
 

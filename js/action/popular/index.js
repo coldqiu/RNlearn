@@ -3,7 +3,7 @@ import DataStore from '../../expand/dao/DataStore'
 
 /***
  * 获取最热数据的异步action
- * @param storeName title 列表的数据
+ * @param storeName title 最热列表下哪一个tab下的数据，store key是变的
  * @param url
  * @returns {{type: string, theme: *}}
  */

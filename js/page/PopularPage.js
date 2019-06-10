@@ -1,8 +1,14 @@
 import React, {Component} from 'react';
-import {Button, StyleSheet, Text, View} from 'react-native';
+import {Button, StyleSheet, Text, View, RefreshControl, FlatList} from 'react-native';
 import {createMaterialTopTabNavigator,createAppContainer} from 'react-navigation';
 import NavigationUtil from '../navigator/NavigationUtil'
+import {connect} from 'react-redux'
+import actions from '../action/index'
+import PopularItem from '../common/PopularItem'
 
+const URL = 'https://api.github.com/search/repositories?q='
+const QUERY_STR = '&sort=star'
+const THEME_COLOR = 'red'
 type Props = {};
 export default class PopularPage extends Component<Props> {
     constructor(props) {
@@ -13,30 +19,15 @@ export default class PopularPage extends Component<Props> {
         const tabs = {};
         this.tabNames.forEach((item, index) => {
             tabs[`tab${index}`] = {
-                screen: props => <PopularTab {...props} tabLabel={item}/>,
+                screen: props => <PopularTabPage {...props} tabLabel={item}/>,
                 navigationOptions: {
                     title: item
                 }
             }
-            console.log("item:", item);
         })
         return tabs;
     }
-    // screen: props => <PopularPage {...props} tabLabel={item}/>,
-// {
-//     PopularTab1: {
-//         screen: PopularTab,
-//         defaultNavigationOptions: {
-//             title: 'Tab1'
-//         }
-//     },
-//     PopularTab2: {
-//         screen: PopularTab,
-//         defaultNavigationOptions: {
-//             title: 'Tab2'
-//         }
-//     }
-// }
+
     render() {
         const TabNavigator = createAppContainer(createMaterialTopTabNavigator(
             this._genTabs(), {
@@ -57,36 +48,73 @@ export default class PopularPage extends Component<Props> {
 }
 
 class PopularTab extends Component<Props> {
+    // 绑定：订阅popular的action 中的store
+    constructor(props) {
+        super(props);
+        const {tabLabel} = this.props; // 就是最热列表页的Tab名称
+        this.storeName = tabLabel;
+    }
+    componentDidMount() {
+        this.loadData();
+    }
+    loadData() {
+        const {onLoadPopularData} = this.props;
+        const url = this.genFetchUrl(this.storeName)
+        onLoadPopularData(this.storeName, url); // 这样调用是因为 这个页面已经
+        // 使用mapDispatchToProps添加了获取数据dispatch方法，否则还可以这样获取数据：
+        // const {dispatch} = this.props
+        // dispatch(actions.onLoadPopularData(this.storeName, url))
+    }
+    genFetchUrl(KEY) {
+        return URL + KEY + QUERY_STR;
+    }
+    renderItem(data) {
+        // 在FlatList组件中作为renderItem
+        const item = data.item;
+        return <PopularItem
+            item={item}
+            onSelect={()=> {}}
+        />
+    }
     render() {
-        const {tabLabel} = this.props;
+        const {popular} = this.props; // 这个popular是mapStateToProps传进来的
+        let store = popular[this.storeName]; // 动态获取state
+        if (!store) {
+            store = {
+               items: [],
+               isLoading: false,
+            }
+        }
         return (
             <View style={styles.container}>
-                <Text style={styles.welcome}>{tabLabel}</Text>
-                <Text onPress={() => {
-                    NavigationUtil.goPage({navigation: this.props.navigation}, "DetailPage")
-                }}>跳转到详情页</Text>
-                <Button
-                    title={"Fetch 使用"}
-                    onPress={() => {
-                        NavigationUtil.goPage({
-                            navigation: this.props.navigation
-                        }, "FetchDemoPage")
-                    }}
-                />
-                <Button
-                    title={"DataStore 使用"}
-                    onPress={() => {
-                        NavigationUtil.goPage({
-                            navigation: this.props.navigation
-                        }, "DataStoreDemoPage")
-                    }}
+                <FlatList
+                    style={styles.flatList}
+                    data={store.items}
+                    renderItem={data=>this.renderItem(data)}
+                    keyExtractor={item=> "" + item.id}
+                    refreshControl={
+                        <RefreshControl
+                            title={'Loading'}
+                            titleColor={THEME_COLOR}
+                            refreshing={store.isLoading} // 是否显示
+                            onRefresh={() => this.loadData()}
+                            tintColor={[THEME_COLOR]}
+                        />
+                    }
                 />
             </View>
-
         )
     }
 }
+const mapStateToProps = state => ({
+    popular: state.popular
+})
+const mapDispatchToProps = dispatch => ({
+    onLoadPopularData: (storeName, url) => dispatch(actions.onLoadPopularData(storeName, url))
+})
 
+// 使用connect 将popularTab和store关联起来
+const PopularTabPage = connect(mapStateToProps, mapDispatchToProps)(PopularTab)
 
 const styles = StyleSheet.create({
     container: {
@@ -116,5 +144,29 @@ const styles = StyleSheet.create({
     labelStyle: {
         fontSize: 13,
         marginTop: 6,
+    },
+    flatList: {
+        fontSize: 15,
+        color: 'red',
     }
 });
+
+            {/*<Text onPress={() => {*/}
+            {/*NavigationUtil.goPage({navigation: this.props.navigation}, "DetailPage")*/}
+            {/*}}>跳转到详情页</Text>*/}
+            {/*<Button*/}
+            {/*title={"Fetch 使用"}*/}
+            {/*onPress={() => {*/}
+            {/*NavigationUtil.goPage({*/}
+            {/*navigation: this.props.navigation*/}
+            {/*}, "FetchDemoPage")*/}
+            {/*}}*/}
+            {/*/>*/}
+            {/*<Button*/}
+            {/*title={"DataStore 使用"}*/}
+            {/*onPress={() => {*/}
+            {/*NavigationUtil.goPage({*/}
+            {/*navigation: this.props.navigation*/}
+            {/*}, "DataStoreDemoPage")*/}
+            {/*}}*/}
+            {/*/>*/}
