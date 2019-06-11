@@ -53,6 +53,7 @@ class PopularTab extends Component<Props> {
         super(props);
         const {tabLabel} = this.props; // 就是最热列表页的Tab名称
         this.storeName = tabLabel;
+        // console.log("this.is.PopularTab.constructor.this.storeName", this.storeName);
     }
     componentDidMount() {
         this.loadData();
@@ -60,7 +61,9 @@ class PopularTab extends Component<Props> {
     loadData() {
         const {onLoadPopularData} = this.props;
         const url = this.genFetchUrl(this.storeName)
+        const {popular} = this.props;
         onLoadPopularData(this.storeName, url); // 这样调用是因为 这个页面已经
+        console.log("popular-in-loadData-function", popular);
         // 使用mapDispatchToProps添加了获取数据dispatch方法，否则还可以这样获取数据：
         // const {dispatch} = this.props
         // dispatch(actions.onLoadPopularData(this.storeName, url))
@@ -68,6 +71,22 @@ class PopularTab extends Component<Props> {
     genFetchUrl(KEY) {
         return URL + KEY + QUERY_STR;
     }
+    // _store() {
+    //     const {popular} = this.props; // 这个popular是mapStateToProps传进来的
+    //     // console.log("this.storeName-always", this.storeName); // 这个render在初始化是多次执行,但是这刷新页面时，这个也执行了多次
+    //     let store = popular[this.storeName]; // 动态获取state
+    //     console.log("store-always", store);
+    //     // 在JavaScript 页下拉时，这部分代码依然会被循环执行5次，
+    //     // 最有的this.storeName 不是JavaScript!!
+    //     console.log("popular", popular);
+    //     if (!store) {
+    //         store = {
+    //             items: [],
+    //             isLoading: false,
+    //         }
+    //     }
+    //     return store;
+    // }
     renderItem(data) {
         // 在FlatList组件中作为renderItem
         const item = data.item;
@@ -77,16 +96,24 @@ class PopularTab extends Component<Props> {
         />
     }
     render() {
+        // let store = this._store();
+        const {tabLabel} = this.props
+        // 刷新也会把所有的Tab都执行一遍
         const {popular} = this.props; // 这个popular是mapStateToProps传进来的
-        let store = popular[this.storeName]; // 动态获取state
+        console.log("this.storeName", this.storeName); // 这个render在初始化是多次执行,但是这刷新页面时，这个也执行了多次
+        let store = popular[tabLabel]; // 动态获取state
+        console.log("store:", store);
+        console.log("tabLabel", tabLabel); //
         if (!store) {
             store = {
                items: [],
                isLoading: false,
             }
         }
+
         return (
             <View style={styles.container}>
+                <Text>{tabLabel}</Text>
                 <FlatList
                     style={styles.flatList}
                     data={store.items}

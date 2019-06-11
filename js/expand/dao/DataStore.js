@@ -7,6 +7,7 @@ export default class DataStore {
             then((wrapData) => {
                 if (wrapData && DataStore.checkTimestampValid(wrapData.timestamp)) {
                     resolve(wrapData);
+                    console.log("fetchLocalData", wrapData);
                 } else {
                     this.fetchNetData(url)
                         .then((data) => {
@@ -19,6 +20,7 @@ export default class DataStore {
             }).catch((error) => {
                 this.fetchNetData(url)
                     .then((data) => {
+                        console.log("fetchNetData", this._wrapData(data));
                         resolve(this._wrapData(data));
                     })
                     .catch((error) => {

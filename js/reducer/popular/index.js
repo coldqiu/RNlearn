@@ -30,8 +30,9 @@ const defaultState = {
 }
 export default function onAction(state=defaultState, action) {
     switch (action.type) {
-        case Types.LOAD_POPULAR_SUCCESS:
-            console.log("action", action);
+        case Types.POPULAR_REFRESH_SUCCESS:
+            // console.log("action", action);
+            // console.log("state:", state);
             return {
                 ...state, // 生成state副本
                 [action.storeName]: { // 新的数据覆盖旧数据
@@ -41,6 +42,8 @@ export default function onAction(state=defaultState, action) {
                 }
             };
         case Types.POPULAR_REFRESH:
+            console.log("actionPOPULAR_REFRESH", action);
+            console.log("statePOPULAR_REFRESH:", state);
             return {
                 ...state,
                 [action.storeName]: {
@@ -49,7 +52,7 @@ export default function onAction(state=defaultState, action) {
                     isLoading: true,
                 }
             };
-        case Types.LOAD_POPULAR_FAIL:
+        case Types.POPULAR_REFRESH_FAIL:
             return {
                 ...state,
                 [action.storeName]: {

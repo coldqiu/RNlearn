@@ -20,7 +20,7 @@ export function onLoadPopularData(storeName, url) {
             .catch(error => {
                 console.log(error);
                 dispatch({
-                    type: Types.LOAD_POPULAR_FAIL,
+                    type: Types.POPULAR_REFRESH_FAIL,
                     storeName,
                     error
                 })
@@ -30,7 +30,7 @@ export function onLoadPopularData(storeName, url) {
 
 function handleData(dispatch, storeName, data) {
     dispatch({
-        type: Types.LOAD_POPULAR_SUCCESS,
+        type: Types.POPULAR_REFRESH_SUCCESS,
         items: data && data.data && data.data.items,
         storeName
     })
