@@ -26,30 +26,35 @@ import Types from '../../action/types'
             };
  */
 
-const defaultState = {
-}
+const defaultState = {}
 export default function onAction(state=defaultState, action) {
     switch (action.type) {
         case Types.POPULAR_REFRESH_SUCCESS:
-            // console.log("action", action);
-            // console.log("state:", state);
+            // console.log("actionPOPULAR_REFRESH_SUCCESS", action);
+            // console.log("statePOPULAR_REFRESH_SUCCESS:", state);
+            // console.log("state-origin", state)
             return {
-                ...state, // 生成state副本
+                ...state, // 生成state副本，或者 Object.assign代替
                 [action.storeName]: { // 新的数据覆盖旧数据
-                    ...state[action.storeName],
-                    items: action.items,
+                    ...state[action.storeName], // 下拉刷新要展示所有数据
+                    items: action.items, // 原始数据
+                    projectModes: action.projectModes,
                     isLoading: false,
+                    hideLoadingMore: false, // 不隐藏加载更多
+                    pageIndex: action.pageIndex,
                 }
             };
+
         case Types.POPULAR_REFRESH:
-            console.log("actionPOPULAR_REFRESH", action);
-            console.log("statePOPULAR_REFRESH:", state);
+            // console.log("action_POPULAR_REFRESH", action);
+            // console.log("state_POPULAR_REFRESH:", state);
             return {
                 ...state,
                 [action.storeName]: {
                     ...state[action.storeName],
                     items: action.items,
                     isLoading: true,
+                    hideLoadingMore: true,
                 }
             };
         case Types.POPULAR_REFRESH_FAIL:
@@ -60,7 +65,28 @@ export default function onAction(state=defaultState, action) {
                     isLoading: false,
                 }
             };
+        case Types.POPULAR_LOAD_MORE_SUCCESS: // 下拉加载更多成功
+            return {
+                ...state,
+                [action.storeName]: {
+                    ...state[action.storeName],
+                    projectModes: action.projectModes,
+                    hideLoadingMore: false, // 不隐藏加载跟多
+                    pageIndex: action.pageIndex,
+
+                }
+            };
+        case Types.POPULAR_LOAD_MORE_FAIL: // 下拉加载更多成功
+            return {
+                ...state,
+                [action.storeName]: {
+                    ...state[action.storeName],
+                    hideLoadingMore: true,
+                    pageIndex: action.pageIndex,
+                }
+            };
         default:
             return state
+
     }
 }

@@ -7,7 +7,7 @@ export default class DataStore {
             then((wrapData) => {
                 if (wrapData && DataStore.checkTimestampValid(wrapData.timestamp)) {
                     resolve(wrapData);
-                    console.log("fetchLocalData", wrapData);
+                    // console.log("fetchLocalData", wrapData);
                 } else {
                     this.fetchNetData(url)
                         .then((data) => {
@@ -20,7 +20,7 @@ export default class DataStore {
             }).catch((error) => {
                 this.fetchNetData(url)
                     .then((data) => {
-                        console.log("fetchNetData", this._wrapData(data));
+                        // console.log("fetchNetData", this._wrapData(data));
                         resolve(this._wrapData(data));
                     })
                     .catch((error) => {
@@ -47,6 +47,7 @@ export default class DataStore {
             AsyncStorage.getItem(url, (error, result) => {
                 if (!error) {
                     try {
+                        // console.log("fetchLocalData", url)
                         resolve(JSON.parse(result));
                     } catch (e) {
                         reject(e);
@@ -75,6 +76,7 @@ export default class DataStore {
                     throw new Error ('Network Wrong')
                 })
                 .then((responseData) => {
+                    // console.log("fetchNetData", responseData)
                     this.saveData(url, responseData)
                     resolve(responseData);
                 })
