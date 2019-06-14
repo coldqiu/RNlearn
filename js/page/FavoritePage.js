@@ -1,20 +1,58 @@
 import React, {Component} from 'react';
-import {Button, StyleSheet, Text, View} from 'react-native';
+import {Button, StyleSheet, Text, View, TouchableOpacity} from 'react-native';
 import {connect} from 'react-redux'
 import action from '../action/index'
+import Feather from 'react-native-vector-icons/Feather'
+import Ionicons from 'react-native-vector-icons/Ionicons'
+import NavigationBar from '../common/NavigationBar'
 
+const THEME_COLOR = '#678'
 type Props = {};
 class FavoritePage extends Component<Props> {
+    getRightButton () {
+        return <View>
+            <TouchableOpacity
+                onPress={() => {
+                }}
+            >
+                <View style={{padding: 5, marginRight:8}}>
+                    <Feather
+                        name={'search'}
+                        size={24}
+                        style={{color: 'white'}}
+                    />
+
+                </View>
+
+            </TouchableOpacity>
+        </View>
+    }
+    getLeftButton (callBack) {
+        return <TouchableOpacity style={{padding: 8, paddingLeft: 12}}
+                                 onPress={callBack}>
+            <Ionicons
+                name={'ios-arrow-back'}
+                size={26}
+                style={{color: 'white'}}
+            />
+        </TouchableOpacity>
+    }
     render() {
+        let statusBar = {
+            backGroundColor: THEME_COLOR,
+            barStyle: 'light-content',
+        }
+        let navigationBar = <NavigationBar
+            title={'收藏'}
+            statusBar={statusBar}
+            style={{backgroundColor: THEME_COLOR}}
+            rightButton={this.getRightButton()}
+            leftButton={this.getLeftButton()}
+        />;
         return (
             <View style={styles.container}>
-                <Text style={styles.welcome}>FavoritePage</Text>
-                <Button
-                    title={"改变主题颜色"}
-                    onPress={() => {
-                        this.props.onThemeChange('#206')
-                    }}
-                />
+                {navigationBar}
+                <Text>sssss!!</Text>
             </View>
         );
     }
@@ -32,9 +70,6 @@ export default connect(mapStateToProps, mapDispatchToProps)(FavoritePage)
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-        backgroundColor: '#F5FCFF',
     },
     welcome: {
         fontSize: 20,
