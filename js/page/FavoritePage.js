@@ -37,13 +37,24 @@ class FavoritePage extends Component<Props> {
             />
         </TouchableOpacity>
     }
+    renderTitleView(callBack) {
+        return  <TouchableOpacity style={{padding: 8, paddingLeft: 12}}
+                                  onPress={callBack}>
+            <Ionicons
+                name={'ios-arrow-back'}
+                size={26}
+                style={{color: 'white'}}
+            />
+            <Text style={{fontSize: 18, color: 'red'}}>sssssssssss</Text>
+        </TouchableOpacity>
+    }
     render() {
         let statusBar = {
             backGroundColor: THEME_COLOR,
             barStyle: 'light-content',
         }
         let navigationBar = <NavigationBar
-            title={'收藏'}
+            titleView={this.renderTitleView(()=>console.log("收藏"))}
             statusBar={statusBar}
             style={{backgroundColor: THEME_COLOR}}
             rightButton={this.getRightButton()}
@@ -52,7 +63,7 @@ class FavoritePage extends Component<Props> {
         return (
             <View style={styles.container}>
                 {navigationBar}
-                <Text>sssss!!</Text>
+                {this.renderTitleView(()=>console.log("收藏"))}
             </View>
         );
     }

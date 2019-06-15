@@ -36,14 +36,13 @@ export default class NavigationBar extends Component {
                 <StatusBar {...this.props.statusBar} />
             </View> : null;
 
-        let titleView = this.props.titleView ? this.props.title :
+        const titleView = this.props.titleView ? this.props.titleView :
             <Text ellipsizeMode="head" numberOfLines={1} style={styles.title}>{this.props.title}</Text>;
-
         let content = this.props.hide ? null :
             <View style={styles.navBar}>
                 {this.getButtonElement(this.props.leftButton)}
                 <View style={[styles.navBarTitleContainer, this.props.titleLayoutStyle]}>
-                    {titleView}
+                   {titleView}
                 </View>
                 {this.getButtonElement(this.props.rightButton)}
             </View>;

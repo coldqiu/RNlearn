@@ -18,7 +18,7 @@ export default class TrendingDialog extends Component {
     state = {
         visible: false,
     }
-    onShow() {
+    show() {
         this.setState({
             visible: true,
         })
@@ -48,19 +48,21 @@ export default class TrendingDialog extends Component {
                     <View style={styles.content}>
                         {TimeSpans.map((result, i, arr) => {
                             return <TouchableOpacity
+                                key={i}
                                 onPress={() => onSelect(arr[i])}
                                 underlayColor='transparent'
                             >
                                 <View style={styles.text_container}>
                                     <Text
                                         style={styles.text}
-                                    >{arr[i].ShowText}</Text>
-                                    { // 不是最后一个就要加分割线
-                                        i !== TimeSpan.length -1 ? <View
-                                            style={styles.line}
-                                        /> : null
-                                    }
+                                    >{arr[i].showText}</Text>
+
                                 </View>
+                                { // 不是最后一个就要加分割线
+                                    i !== TimeSpan.length -1 ? <View
+                                        style={styles.line}
+                                    /> : null
+                                }
                             </TouchableOpacity>
                         })}
 
