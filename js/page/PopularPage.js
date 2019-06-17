@@ -130,9 +130,9 @@ class PopularTab extends Component<Props> {
                     projectModel: item,
                 }, 'DetailPage')
                 console.log("projectModel-in.PopularPage", item)
-
             }}
         />
+        return <Text>sssssss</Text>
     }
     genIndicator() {
         return this._store().hideLoadingMore ? null:

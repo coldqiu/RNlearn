@@ -1,15 +1,16 @@
 import Types from '../types'
 import DataStore from '../../expand/dao/DataStore'
-import {handleData} from  '../ActionUtil'
+import {handleData, _projectModels} from  '../ActionUtil'
 /***
  * 获取最热数据的异步action,下拉刷新
  * @param storeName title 最热列表下哪一个tab下的数据，store key是变的
  * @param url
  * @param pageSize 每一页显示的数量
+ * @param favoriteDao 增加这个参数是为了handleData 中使用
  * @returns
  */
 
-export function onLoadPopularData(storeName, url, pageSize) {
+export function onLoadPopularData(storeName, url, pageSize, favoriteDao) {
     // return {type: Types.THEME_CHANGE, theme: theme} // 不能使用同步的
     // console.log("onLoadPopularData-function-insider", storeName)
     // console.log("onLoadPopularData-function-insider", url)
@@ -18,7 +19,7 @@ export function onLoadPopularData(storeName, url, pageSize) {
         let dataStore = new DataStore();
         dataStore.fetchData(url) // 异步action与数据流
             .then(data => {
-                handleData(Types.POPULAR_REFRESH_SUCCESS, dispatch, storeName, data, pageSize)
+                handleData(Types.POPULAR_REFRESH_SUCCESS, dispatch, storeName, data, pageSize, favoriteDao)
             })
             .catch(error => {
                 console.log(error);
@@ -31,22 +32,6 @@ export function onLoadPopularData(storeName, url, pageSize) {
     }
 }
 
-// function handleData(dispatch, storeName, data, pageSize) {
-//     // console.log("似乎没有进入这个函数？")
-//     let fixItems = []
-//     if (data && data.data && data.data.items) {
-//         fixItems = data.data.items
-//     }
-//     dispatch({
-//         type: Types.POPULAR_REFRESH_SUCCESS,
-//         // items: data && data.data && data.data.items,
-//         items: fixItems,
-//         projectModes: pageSize > fixItems.length ? fixItems: fixItems.slice(0, pageSize),// 第一次要加载的数据
-//         storeName,
-//         pageIndex: 1 // 第一次加载 pageIndex = 1
-//     })
-// }
-
 
 /**
  * 加载更多
@@ -57,7 +42,8 @@ export function onLoadPopularData(storeName, url, pageSize) {
  * @param callBack 回调函数，可以通过回调函数来向调用页面通信：比如异常信息的展示，没有更多等待
  * @returns {function(*)}
  */
-export function onLoadMorePopular(storeName, url, pageIndex, pageSize, dataArray = [], callBack) {
+
+export function onLoadMorePopular(storeName, pageIndex, pageSize, dataArray = [],favoriteDao, callBack) {
     return dispatch => {
         setTimeout(() => {//模拟网络请求
             if ((pageIndex - 1) * pageSize >= dataArray.length) {//已加载完全部数据
@@ -75,11 +61,19 @@ export function onLoadMorePopular(storeName, url, pageIndex, pageSize, dataArray
                 //本次和载入的最大数量
                 // console.log("dataArray", dataArray)
                 let max = pageSize * pageIndex > dataArray.length ? dataArray.length : pageSize * pageIndex;
-                dispatch({
-                    type: Types.POPULAR_LOAD_MORE_SUCCESS,
-                    storeName,
-                    pageIndex,
-                    projectModes: dataArray.slice(0, max),
+                // dispatch({
+                //     type: Types.POPULAR_LOAD_MORE_SUCCESS,
+                //     storeName,
+                //     pageIndex,
+                //     projectModes: dataArray.slice(0, max),
+                // })
+                _projectModels(dataArray.slice(0, max),favoriteDao,data=>{
+                    dispatch({
+                        type: Types.POPULAR_LOAD_MORE_SUCCESS,
+                        storeName,
+                        pageIndex,
+                        projectModels: data,
+                    })
                 })
             }
         }, 500);
