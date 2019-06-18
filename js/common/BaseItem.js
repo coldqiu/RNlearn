@@ -33,7 +33,7 @@ export  default class BaseItem extends Component {
         }
         return null
     }
-    setFavoriteState() {
+    setFavoriteState(isFavorite) {
         this.props.projectModel.isFavorite = isFavorite;
         this.setState({
             isFavorite: isFavorite,
@@ -45,7 +45,7 @@ export  default class BaseItem extends Component {
         // this.props.onFavorite 用于回调到具体的页面，将具体的item和state.isFavorite状态传递过去
     }
     _favoriteIcon() {
-        const {theme} = this.props;
+        // const {theme} = this.props;
         return <TouchableOpacity
             style={{padding: 6}}
             underlayColor='transparent'
@@ -53,7 +53,7 @@ export  default class BaseItem extends Component {
             <FontAwesome
                 name={this.state.isFavorite ? 'star' : 'star-o'}
                 size={26}
-                style={{color: theme.themeColor}}
+                style={{color: 'gray'}}
             />
         </TouchableOpacity>
     }

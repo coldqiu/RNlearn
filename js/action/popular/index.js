@@ -20,6 +20,7 @@ export function onLoadPopularData(storeName, url, pageSize, favoriteDao) {
         dataStore.fetchData(url) // 异步action与数据流
             .then(data => {
                 handleData(Types.POPULAR_REFRESH_SUCCESS, dispatch, storeName, data, pageSize, favoriteDao)
+                // console.log("data--action-popular-未包裹isFavorite", data)
             })
             .catch(error => {
                 console.log(error);
@@ -55,19 +56,14 @@ export function onLoadMorePopular(storeName, pageIndex, pageSize, dataArray = []
                     error: 'no more',
                     storeName: storeName,
                     pageIndex: --pageIndex,
-                    projectModes: dataArray,
+                    projectModels: dataArray,
                 })
             } else {
                 //本次和载入的最大数量
                 // console.log("dataArray", dataArray)
                 let max = pageSize * pageIndex > dataArray.length ? dataArray.length : pageSize * pageIndex;
-                // dispatch({
-                //     type: Types.POPULAR_LOAD_MORE_SUCCESS,
-                //     storeName,
-                //     pageIndex,
-                //     projectModes: dataArray.slice(0, max),
-                // })
-                _projectModels(dataArray.slice(0, max),favoriteDao,data=>{
+                console.log("this.is.action/popular/index.js-function-onLoadMorePopular-favoriteDao", favoriteDao)
+                _projectModels(dataArray.slice(0, max), favoriteDao, data=>{
                     dispatch({
                         type: Types.POPULAR_LOAD_MORE_SUCCESS,
                         storeName,

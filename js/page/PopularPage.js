@@ -7,7 +7,12 @@ import actions from '../action/index'
 import PopularItem from '../common/PopularItem'
 import Toast from 'react-native-easy-toast'
 import NavigationBar from '../common/NavigationBar'
+import FavoriteUtil from '../util/FavoriteUtil'
+import {FLAG_STORAGE} from "../expand/dao/DataStore";
+import FavoriteDao from '../expand/dao/FavoriteDao'
 
+
+const favoriteDao = new FavoriteDao(FLAG_STORAGE.flag_popular); // FLAG_STORAGE.flag_popular = 'popular'
 const URL = 'https://api.github.com/search/repositories?q='
 const QUERY_STR = '&sort=star'
 const THEME_COLOR = '#678'
@@ -113,7 +118,7 @@ class PopularTab extends Component<Props> {
             store = {
                 items: [],
                 isLoading: false,
-                projectModes: [], // 要显示的数据
+                projectModels: [], // 要显示的数据
                 hideLoadingMore: true, // 默认隐藏加载更多
             }
         }
@@ -123,16 +128,17 @@ class PopularTab extends Component<Props> {
     renderItem(data) {
         // 在FlatList组件中作为renderItem
         const item = data.item;
+        console.log("item", item)
+
         return <PopularItem
-            item={item}
+            projectModel={item}
             onSelect={()=> {
                 NavigationUtil.goPage({
                     projectModel: item,
                 }, 'DetailPage')
-                console.log("projectModel-in.PopularPage", item)
             }}
+            onFavorite={(item, isFavorite) => FavoriteUtil.onFavorite(favoriteDao, item, isFavorite, FLAG_STORAGE.flag_popular)}
         />
-        return <Text>sssssss</Text>
     }
     genIndicator() {
         return this._store().hideLoadingMore ? null:
@@ -145,16 +151,18 @@ class PopularTab extends Component<Props> {
     }
     render() {
         let store = this._store();
-        const {tabLabel} = this.props
+        console.log("store", store)
+        console.log("store.projectModel", store.projectModels)
+
+        // const {tabLabel} = this.props
         // // 刷新也会把所有的Tab都执行一遍
 
         return (
             <View style={styles.container}>
                 <FlatList
-                    style={styles.flatList}
-                    data={store.projectModes}
+                    data={store.projectModels}
                     renderItem={data=>this.renderItem(data)}
-                    keyExtractor={item=> "" + item.id}
+                    keyExtractor={item=> "" + item.item.id} // 第一个item是projectModel
                     refreshControl={
                         <RefreshControl
                             title={'Loading'}
@@ -194,9 +202,8 @@ const mapStateToProps = state => ({
     popular: state.popular
 })
 const mapDispatchToProps = dispatch => ({
-    onLoadPopularData: (storeName, url, pageSize) => dispatch(actions.onLoadPopularData(storeName, url, pageSize)),
-    onLoadMorePopular: (storeName, url, pageIndex, pageSize, items, callback) => dispatch(actions.onLoadMorePopular(storeName, url, pageIndex, pageSize, items, callback))
-
+    onLoadPopularData: (storeName, url, pageSize) => dispatch(actions.onLoadPopularData(storeName, url, pageSize, favoriteDao)),
+    onLoadMorePopular: (storeName, pageIndex, pageSize, items, callback) => dispatch(actions.onLoadMorePopular(storeName, pageIndex, pageSize, items, favoriteDao, callback))
 })
 
 // 使用connect 将popularTab和store关联起来

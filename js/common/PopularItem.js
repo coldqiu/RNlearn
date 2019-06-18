@@ -6,9 +6,10 @@ import BaseItem from './BaseItem'
 export default class PopularItem extends BaseItem {
     render() {
         console.log("this.props", this.props)
-        const {item} = this.props;
-        // const projectModel = this.props;
-        // const {item} = projectModel;
+        const {projectModel} = this.props;
+        const {item} = projectModel;
+        console.log("PopularItem", projectModel)
+        console.log("item:", item)
         if (!item || !item.owner) return null;
         return (
             <TouchableOpacity
@@ -32,7 +33,7 @@ export default class PopularItem extends BaseItem {
                             <Text>Start:</Text>
                             <Text>{item.stargazers_count}</Text>
                         </View>
-                        {/*{this._favoriteIcon()}*/}
+                        {this._favoriteIcon()}
                     </View>
                 </View>
 

@@ -24,14 +24,7 @@ export function handleData(actionType, dispatch, storeName, data, pageSize, favo
             ...params
         })
     });
-    // dispatch({
-    //     type: actionType,
-    //     // items: data && data.data && data.data.items,
-    //     items: fixItems,
-    //     projectModes: pageSize > fixItems.length ? fixItems: fixItems.slice(0, pageSize),// 第一次要加载的数据
-    //     storeName,
-    //     pageIndex: 1 // 第一次加载 pageIndex = 1
-    // })
+
 }
 
 
@@ -50,12 +43,14 @@ export async function _projectModels(showItems, favoriteDao, callback) {
         //获取收藏的key
         keys = await favoriteDao.getFavoriteKeys();
     } catch (e) {
-        console.log('e', e);
+        console.log('eeee.ActionUtil');
     }
     let projectModels = [];
     for (let i = 0, len = showItems.length; i < len; i++) {
         projectModels.push(new ProjectModel(showItems[i], Utils.checkFavorite(showItems[i], keys)));
     }
+    console.log("keys", keys)
+    console.log("projectModels", projectModels)
     doCallBack(callback,projectModels);
 }
 export const doCallBack = (callBack, object) => {
