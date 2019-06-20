@@ -34,12 +34,18 @@ export  default class BaseItem extends Component {
         return null
     }
     setFavoriteState(isFavorite) {
-        this.props.projectModel.isFavorite = isFavorite;
+        this.props.projectModel.isFavorite = isFavorite; // 这个操作的疑问解答：https://coding.imooc.com/learn/questiondetail/103141.html
         this.setState({
             isFavorite: isFavorite,
         })
     }
+    onItemClick() {
+        this.props.onSelect(isFavorite => {
+            this.setFavoriteState(isFavorite)
+        })
+    }
     onPressFavorite() {
+        console.log("this.state.isFavorite", this.state.isFavorite)
         this.setFavoriteState(!this.state.isFavorite); // 更新state.isFavorite状态
         this.props.onFavorite(this.props.projectModel.item, !this.state.isFavorite)
         // this.props.onFavorite 用于回调到具体的页面，将具体的item和state.isFavorite状态传递过去

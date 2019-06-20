@@ -33,6 +33,7 @@ export default class PopularPage extends Component<Props> {
                 }
             }
         })
+        console.log("tabs", tabs)
         return tabs;
     }
 
@@ -61,6 +62,10 @@ export default class PopularPage extends Component<Props> {
                 }
             }
         ))
+        console.log("this.props-PopularPage", this.props)
+
+        console.log("TabNavigator", <TabNavigator/>)
+
         return <View style={{flex: 1, marginTop: DeviceInfo.isIPhoneX_deprecated ? 30 : 0}}>
             {navigationBar}
             <TabNavigator/>
@@ -95,12 +100,12 @@ class PopularTab extends Component<Props> {
         // onLoadMorePopular: (storeName, url, pageIndex, pageSize, items, callback) => dispatch(actions.onLoadMorePopular(storeName, url, pageIndex, pageSize, items, callback))
         console.log()
         if (loadMore) { // 根据loadMore 判断执行哪一action
-            onLoadMorePopular(this.storeName, url, ++store.pageIndex, pageSize, store.items, callback=> {
+            onLoadMorePopular(this.storeName, ++store.pageIndex, pageSize, store.items, favoriteDao, callback=> {
                 this.refs.toast.show('没有更多了')
             })
 
         } else {
-            onLoadPopularData(this.storeName, url, pageSize)
+            onLoadPopularData(this.storeName, url, pageSize, favoriteDao)
         }
 
     }
@@ -128,16 +133,20 @@ class PopularTab extends Component<Props> {
     renderItem(data) {
         // 在FlatList组件中作为renderItem
         const item = data.item;
-        console.log("item", item)
+        // console.log("data-renderItem", data)
+        // console.log("item-renderItem", item)
 
         return <PopularItem
             projectModel={item}
-            onSelect={()=> {
+            onSelect={(callback)=> {
                 NavigationUtil.goPage({
-                    projectModel: item,
+                    projectModel: item, // 详情页还没准备好接受有isFavorite字段的对象
+                    // projectModel: item
+                    flag: FLAG_STORAGE.flag_popular,
+                    callback
                 }, 'DetailPage')
             }}
-            onFavorite={(item, isFavorite) => FavoriteUtil.onFavorite(favoriteDao, item, isFavorite, FLAG_STORAGE.flag_popular)}
+            onFavorite={(item, isFavorite) => FavoriteUtil.onFavorite(favoriteDao, item, isFavorite, this.storeName)}
         />
     }
     genIndicator() {
@@ -151,8 +160,8 @@ class PopularTab extends Component<Props> {
     }
     render() {
         let store = this._store();
-        console.log("store", store)
-        console.log("store.projectModel", store.projectModels)
+        // console.log("store", store)
+        // console.log("store.projectModel", store.projectModels)
 
         // const {tabLabel} = this.props
         // // 刷新也会把所有的Tab都执行一遍
@@ -176,7 +185,7 @@ class PopularTab extends Component<Props> {
                     onEndReached={() => { // 当列表滚动到底部会执行这个方法
                        setTimeout(() => {
                            if (this.canLoadMore) {
-                               console.log("!!!!!onEndReached!!!!!!")
+                               // console.log("!!!!!onEndReached!!!!!!")
                                this.loadData(true)
                                this.canLoadMore= false
                            }
@@ -187,7 +196,7 @@ class PopularTab extends Component<Props> {
                     onEndReachedThreshold={0.5}
                     onMomentumScrollBegin={() => {
                         this.canLoadMore = true
-                        console.log("!!!!!!onMomentumScrollBegin!!!!!!")
+                        // console.log("!!!!!!onMomentumScrollBegin!!!!!!")
                     }}
                 />
                 <Toast
@@ -202,8 +211,8 @@ const mapStateToProps = state => ({
     popular: state.popular
 })
 const mapDispatchToProps = dispatch => ({
-    onLoadPopularData: (storeName, url, pageSize) => dispatch(actions.onLoadPopularData(storeName, url, pageSize, favoriteDao)),
-    onLoadMorePopular: (storeName, pageIndex, pageSize, items, callback) => dispatch(actions.onLoadMorePopular(storeName, pageIndex, pageSize, items, favoriteDao, callback))
+    onLoadPopularData: (storeName, url, pageSize, favoriteDao) => dispatch(actions.onLoadPopularData(storeName, url, pageSize, favoriteDao)),
+    onLoadMorePopular: (storeName, pageIndex, pageSize, items, favoriteDao, callback) => dispatch(actions.onLoadMorePopular(storeName, pageIndex, pageSize, items, favoriteDao, callback))
 })
 
 // 使用connect 将popularTab和store关联起来

@@ -6,7 +6,7 @@ import BastItem from './BaseItem'
 
 export default class TrendingItem extends BastItem {
     render() {
-        console.log("this.props-TrendingPage", this.props)
+        // console.log("this.props-TrendingPage", this.props)
         const {projectModel} = this.props
         const {item} = projectModel;
         if (!item) return null;
@@ -14,7 +14,8 @@ export default class TrendingItem extends BastItem {
         let description = '<p>' + item.description + '</p>'
         return (
             <TouchableOpacity
-                onPress={this.props.onSelect}
+                // onPress={this.props.onSelect}
+                onPress={() => this.onItemClick()}
             >
                 <View style={styles.cell_container}>
                     <Text style={styles.title}>

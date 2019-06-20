@@ -44,7 +44,13 @@ export function onLoadPopularData(storeName, url, pageSize, favoriteDao) {
  * @returns {function(*)}
  */
 
-export function onLoadMorePopular(storeName, pageIndex, pageSize, dataArray = [],favoriteDao, callBack) {
+export function onLoadMorePopular(storeName, pageIndex, pageSize, dataArray = [], favoriteDao, callBack) {
+    // console.log("storeName", storeName)
+    // console.log("pageIndex", pageIndex)
+    // console.log("pageSize", pageSize)
+    // console.log("dataArray", dataArray)
+    // console.log("favoriteDao", favoriteDao)
+    // console.log("callBack", callBack)
     return dispatch => {
         setTimeout(() => {//模拟网络请求
             if ((pageIndex - 1) * pageSize >= dataArray.length) {//已加载完全部数据
@@ -60,7 +66,7 @@ export function onLoadMorePopular(storeName, pageIndex, pageSize, dataArray = []
                 })
             } else {
                 //本次和载入的最大数量
-                // console.log("dataArray", dataArray)
+                console.log("dataArray", dataArray)
                 let max = pageSize * pageIndex > dataArray.length ? dataArray.length : pageSize * pageIndex;
                 console.log("this.is.action/popular/index.js-function-onLoadMorePopular-favoriteDao", favoriteDao)
                 _projectModels(dataArray.slice(0, max), favoriteDao, data=>{

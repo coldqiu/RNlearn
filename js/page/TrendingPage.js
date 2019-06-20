@@ -9,6 +9,11 @@ import NavigationBar from '../common/NavigationBar'
 import TrendingDialog, {TimeSpans} from "../common/TrendingDialog";
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
 import NavigationUtil from '../navigator/NavigationUtil'
+import {FLAG_STORAGE} from "../expand/dao/DataStore";
+import FavoriteDao from '../expand/dao/FavoriteDao'
+import FavoriteUtil from "../util/FavoriteUtil";
+
+const favoriteDao = new FavoriteDao(FLAG_STORAGE.flag_trending); //
 
 const EVENT_TYPE_TIME_SPAN_CHANGE = "EVENT_TYPE_TIME_SPAN_CHANGE"
 const URL = 'https://github.com/trending/'
@@ -135,16 +140,16 @@ class TrendingTab extends Component<Props> {
         const url = this.genFetchUrl(this.storeName)
         const store = this._store()
         if (loadMore) { // 根据loadMore 判断执行哪一action
-            onLoadMoreTrending(this.storeName, url, ++store.pageIndex, pageSize, store.items, callback=> {
+            onLoadMoreTrending(this.storeName, ++store.pageIndex, pageSize, store.items, favoriteDao, callback=> {
                 this.refs.toast.show('没有更多了')
             })
 
         } else {
-            onRefreshTrending(this.storeName, url, pageSize)
+            onRefreshTrending(this.storeName, url, pageSize, favoriteDao)
         }
     }
     genFetchUrl(KEY) {
-        console.log("this.timeSpan", this.timeSpan)
+        // console.log("this.timeSpan", this.timeSpan)
         return URL + KEY + '?' + this.timeSpan.searchText;
     }
     _store() {
@@ -154,7 +159,7 @@ class TrendingTab extends Component<Props> {
             store = {
                 items: [],
                 isLoading: false,
-                projectModes: [], // 要显示的数据
+                projectModels: [], // 要显示的数据
                 hideLoadingMore: true, // 默认隐藏加载更多
             }
         }
@@ -164,13 +169,18 @@ class TrendingTab extends Component<Props> {
     renderItem(data) {
         // 在FlatList组件中作为renderItem
         const item = data.item;
+        // console.log("data-renderItem", data)
+        // console.log("item-renderItem", item)
         return <TrendingItem
-            item={item}
-            onSelect={()=> {
+            projectModel={item}
+            onSelect={(callback)=> {
                 NavigationUtil.goPage({
-                    projectModel: item
+                    projectModel: item,
+                    flag: FLAG_STORAGE.flag_trending,
+                    callback
                 }, 'DetailPage')
             }}
+            onFavorite={(item, isFavorite) => FavoriteUtil.onFavorite(favoriteDao, item, isFavorite, FLAG_STORAGE.flag_trending)}
         />
     }
     genIndicator() {
@@ -186,13 +196,12 @@ class TrendingTab extends Component<Props> {
         let store = this._store();
         // const {tabLabel} = this.props
         // // 刷新也会把所有的Tab都执行一遍
-
         return (
             <View style={styles.container}>
                 <FlatList
-                    data={store.projectModes}
+                    data={store.projectModels}
                     renderItem={data=>this.renderItem(data)}
-                    keyExtractor={item=> "" + (item.id || item.fullName)}
+                    keyExtractor={item=> "" + (item.item.id || item.item.fullName)}
                     refreshControl={
                         <RefreshControl
                             title={'Loading'}
@@ -232,8 +241,8 @@ const mapStateToProps = state => ({
     trending: state.trending
 })
 const mapDispatchToProps = dispatch => ({
-    onRefreshTrending: (storeName, url, pageSize) => dispatch(actions.onRefreshTrending(storeName, url, pageSize)),
-    onLoadMoreTrending: (storeName, url, pageIndex, pageSize, items, callback) => dispatch(actions.onLoadMoreTrending(storeName, url, pageIndex, pageSize, items, callback))
+    onRefreshTrending: (storeName, url, pageSize, favoriteDao) => dispatch(actions.onRefreshTrending(storeName, url, pageSize, favoriteDao)),
+    onLoadMoreTrending: (storeName, pageIndex, pageSize, items, favoriteDao, callback) => dispatch(actions.onLoadMoreTrending(storeName, pageIndex, pageSize, items, favoriteDao, callback))
 })
 
 // 使用connect 将popularTab和store关联起来

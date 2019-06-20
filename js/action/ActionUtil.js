@@ -49,8 +49,7 @@ export async function _projectModels(showItems, favoriteDao, callback) {
     for (let i = 0, len = showItems.length; i < len; i++) {
         projectModels.push(new ProjectModel(showItems[i], Utils.checkFavorite(showItems[i], keys)));
     }
-    console.log("keys", keys)
-    console.log("projectModels", projectModels)
+
     doCallBack(callback,projectModels);
 }
 export const doCallBack = (callBack, object) => {

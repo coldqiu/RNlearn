@@ -13,7 +13,8 @@ import Ionicons from 'react-native-vector-icons/Ionicons'
 import Entypo from 'react-native-vector-icons/Entypo'
 // import {BottomTabBar} from "react-navigation-tabs"
 import {connect} from 'react-redux'
-
+import EventBus from 'react-native-event-bus' // 功能与RN自带的Device..相似
+import EventTypes from '../util/EventTypes'
 
 const TABS = { // 配置路由页面
     PopularPage: {
@@ -93,7 +94,15 @@ class DynamicTabNavigator extends Component<Props> {
         // 在NavigationUtil中使用静态属性保存 BottomTabNavigator
         // NavigationUtil.navigation = this.props.navigation;
         const Tab = this._tabNavigator();
-        return <Tab/>
+        return <Tab
+            onNavigationStateChange={(prevState, newState, action) => {
+                EventBus.getInstance().fireEvent(EventTypes.bottom_tab_select, {
+                    from: prevState.index,
+                    to: newState.index
+                })
+            }
+            }
+        />
     }
 }
 

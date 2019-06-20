@@ -35,7 +35,7 @@ export default function onAction(state=defaultState, action) {
                 [action.storeName]: { // 新的数据覆盖旧数据
                     ...state[action.storeName], // 下拉刷新要展示所有数据
                     items: action.items, // 原始数据
-                    projectModes: action.projectModes,
+                    projectModels: action.projectModels,
                     isLoading: false,
                     hideLoadingMore: false, // 不隐藏加载更多
                     pageIndex: action.pageIndex,
@@ -65,7 +65,7 @@ export default function onAction(state=defaultState, action) {
                 ...state,
                 [action.storeName]: {
                     ...state[action.storeName],
-                    projectModes: action.projectModes,
+                    projectModels: action.projectModels,
                     hideLoadingMore: false, // 不隐藏加载跟多
                     pageIndex: action.pageIndex,
 

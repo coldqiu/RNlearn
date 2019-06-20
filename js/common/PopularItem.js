@@ -5,15 +5,16 @@ import BaseItem from './BaseItem'
 
 export default class PopularItem extends BaseItem {
     render() {
-        console.log("this.props", this.props)
+        // console.log("this.props", this.props)
         const {projectModel} = this.props;
         const {item} = projectModel;
-        console.log("PopularItem", projectModel)
-        console.log("item:", item)
+        // console.log("PopularItem", projectModel)
+        // console.log("item:", item)
         if (!item || !item.owner) return null;
         return (
             <TouchableOpacity
-                onPress={this.props.onSelect}
+                // onPress={this.props.onSelect}
+                onPress={() => this.onItemClick()}
             >
                 <View style={styles.cell_container}>
                     <Text style={styles.title}>

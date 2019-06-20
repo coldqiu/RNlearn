@@ -15,7 +15,9 @@ export default class FavoriteDao {
      * @param value 收藏的项目
      * @param callback
      */
-    saveFavoriteItem(key, vaule, callback){
+    saveFavoriteItem(key, value, callback){
+        console.log("key", key)
+
         AsyncStorage.setItem(key, value, (error, result) => {
             if (!error) { // 更新FavorateKeys
                 this.updateFavoriteKeys(key, true)

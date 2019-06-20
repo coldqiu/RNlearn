@@ -1,11 +1,12 @@
 import React, {Component} from 'react';
-import {Platform, StyleSheet, Text, View, TouchableOpacity, DeviceInfo} from 'react-native';
+import {StyleSheet, View, TouchableOpacity, DeviceInfo} from 'react-native';
 import WebView from 'react-native-webview'
 import NavigationBar from '../common/NavigationBar'
 import ViewUtil from '../util/ViewUtil'
 import FontAwesome from 'react-native-vector-icons/FontAwesome'
 import NavigationUtil from "../navigator/NavigationUtil";
 import BackPressComponent from '../common/BackPressComponent'
+import FavoriteDao from '../expand/dao/FavoriteDao'
 
 
 const TRENDING_URL = 'https://github.com/'
@@ -17,15 +18,18 @@ export default class DetailPage extends Component<Props> {
         super(props);
         this.params = this.props.navigation.state.params;
         // 如何将projectModel进来
-        const {projectModel} = this.params;
+        // console.log("this.params-DetailPage.js", this.params)
+        const {projectModel, flag} = this.params;
+        this.favoriteDao = new FavoriteDao(flag)
         // 最热模块与趋势模块的url不同
-        this.url = projectModel.html_url || TRENDING_URL + projectModel.fullName
-        const title = projectModel.full_name || projectModel.fullName
-        console.log("title", title)
+        this.url = projectModel.item.html_url || TRENDING_URL + projectModel.item.fullName
+        const title = projectModel.item.full_name || projectModel.item.fullName
+        // console.log("title", title)
         this.state = {
             title: title,
             url: this.url,
             canGoBack: false,
+            isFavorite: projectModel.isFavorite,
         }
         //   this.backPress = new BackPressComponent({backPress: this.onBackPress()}) // 直接执行了函数
         this.backPress = new BackPressComponent({backPress: () => this.onBackPress()}) // 函数绑定
@@ -43,11 +47,24 @@ export default class DetailPage extends Component<Props> {
         return true;
     }
     onBack() {
-        console.log("哪里")
         if (this.state.canGoBack) {
             this.webView.goBack();
         } else {
             NavigationUtil.goBack(this.props.navigation)
+        }
+    }
+    onFavoriteButtonClick() {
+        const {projectModel, callback} = this.params
+        const isFavorite = projectModel.isFavorite = !projectModel.isFavorite
+        callback(isFavorite) // 将收藏状态传递出去，给列表页
+        this.setState({
+            isFavorite: isFavorite
+        })
+        let key = projectModel.item.fullName ? projectModel.item.fullName : projectModel.item.id.toString()
+        if (projectModel.isFavorite) {
+            this.favoriteDao.saveFavoriteItem(key, JSON.stringify(projectModel.item))
+        } else {
+            this.favoriteDao.removeFavoriteItem(key)
         }
     }
     renderRightButton() {
@@ -56,10 +73,10 @@ export default class DetailPage extends Component<Props> {
                 style={{flexDirection: 'row'}}
             >
                 <TouchableOpacity
-                    onPress={() => {}}
+                    onPress={() => this.onFavoriteButtonClick()}
                 >
                     <FontAwesome
-                        name={'star-o'}
+                        name={this.state.isFavorite ? 'star' : 'star-o'}
                         size={20}
                         style={{color: 'white', marginRight: 10}}
                     />
