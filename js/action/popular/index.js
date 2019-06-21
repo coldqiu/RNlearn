@@ -66,9 +66,9 @@ export function onLoadMorePopular(storeName, pageIndex, pageSize, dataArray = []
                 })
             } else {
                 //本次和载入的最大数量
-                console.log("dataArray", dataArray)
+                // console.log("dataArray", dataArray)
                 let max = pageSize * pageIndex > dataArray.length ? dataArray.length : pageSize * pageIndex;
-                console.log("this.is.action/popular/index.js-function-onLoadMorePopular-favoriteDao", favoriteDao)
+                // console.log("this.is.action/popular/index.js-function-onLoadMorePopular-favoriteDao", favoriteDao)
                 _projectModels(dataArray.slice(0, max), favoriteDao, data=>{
                     dispatch({
                         type: Types.POPULAR_LOAD_MORE_SUCCESS,
@@ -79,5 +79,20 @@ export function onLoadMorePopular(storeName, pageIndex, pageSize, dataArray = []
                 })
             }
         }, 500);
+    }
+}
+
+export function onFlushPopularFavorite(storeName, pageIndex, pageSize, dataArray = [], favoriteDao) {
+    return dispatch=>{
+        //本次和载入的最大数量
+        let max = pageSize * pageIndex > dataArray.length ? dataArray.length : pageSize * pageIndex;
+        _projectModels(dataArray.slice(0, max),favoriteDao,data=>{
+            dispatch({
+                type: Types.FLUSH_POPULAR_FAVORITE,
+                storeName,
+                pageIndex,
+                projectModels: data,
+            })
+        })
     }
 }

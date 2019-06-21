@@ -74,7 +74,7 @@ class FavoriteTab extends Component<Props> {
     }
     componentDidMount() {
         this.loadData();
-        EventBus.getInstance().addListener(EventTypes.bottom_tab_select, this.listener = data =>{
+        EventBus.getInstance().addListener(EventTypes.bottom_tab_select, this.listener = data =>{ // 注册监听事件
             if (data.to === 2) {
                 this.loadData(false)
             }
@@ -101,20 +101,17 @@ class FavoriteTab extends Component<Props> {
         }
         return store;
     }
-    // onFavorite(item, isFavorite) {
-        // FavoriteUtil.onFavorite(this.favoriteDao, item, isFavorite, this.props.flag);
-        // if (this.storeName === FLAG_STORAGE.flag_popular) {
-        //     EventBus.getInstance().fireEvent(EventTypes.favorite_changed_popular);
-        // } else {
-        //     EventBus.getInstance().fireEvent(EventTypes.favoriteChanged_trending);
-        // }
-
-        // onFavorite={(item, isFavorite) => FavoriteUtil.onFavorite(favoriteDao, item, isFavorite, this.storeName)}
-
-    // }
+    onFavorite(item, isFavorite) {
+        FavoriteUtil.onFavorite(this.favoriteDao, item, isFavorite, this.props.flag);
+        if (this.storeName === FLAG_STORAGE.flag_popular) {
+            EventBus.getInstance().fireEvent(EventTypes.favorite_changed_popular);
+        } else {
+            EventBus.getInstance().fireEvent(EventTypes.favorite_changed_trending);
+        }
+    }
     renderItem(data) {
         const favoriteDao = this.favoriteDao
-        console.log("fav", favoriteDao)
+        // console.log("fav", favoriteDao)
         const item = data.item;
         const Item = this.storeName === FLAG_STORAGE.flag_popular ? PopularItem : TrendingItem
         return <Item
@@ -126,8 +123,8 @@ class FavoriteTab extends Component<Props> {
                     callback
                 }, 'DetailPage')
             }}
-            // onFavorite={(item, isFavorite) => this.onFavorite(item, isFavorite)}
-            onFavorite={(item, isFavorite) => FavoriteUtil.onFavorite(favoriteDao, item, isFavorite, this.storeName)}
+            onFavorite={(item, isFavorite) => this.onFavorite(item, isFavorite)}
+            // onFavorite={(item, isFavorite) => FavoriteUtil.onFavorite(favoriteDao, item, isFavorite, this.storeName)}
 
         />
     }

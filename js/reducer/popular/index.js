@@ -85,6 +85,15 @@ export default function onAction(state=defaultState, action) {
                     pageIndex: action.pageIndex,
                 }
             };
+        case Types.FLUSH_POPULAR_FAVORITE: // 刷新收藏状态
+            console.log("action-reducer/popular/index", action)
+            return {
+                ...state,
+                [action.storeName]: {
+                    ...state[action.storeName],
+                    projectModels: action.projectModels,
+                }
+            }
         default:
             return state
 

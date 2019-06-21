@@ -95,8 +95,8 @@ class DynamicTabNavigator extends Component<Props> {
         // NavigationUtil.navigation = this.props.navigation;
         const Tab = this._tabNavigator();
         return <Tab
-            onNavigationStateChange={(prevState, newState, action) => {
-                EventBus.getInstance().fireEvent(EventTypes.bottom_tab_select, {
+            onNavigationStateChange={(prevState, newState, action) => { // 当底部Tab发生切换触发这个事件
+                EventBus.getInstance().fireEvent(EventTypes.bottom_tab_select, { // 发送一个事件
                     from: prevState.index,
                     to: newState.index
                 })
