@@ -2,6 +2,8 @@ import {createStackNavigator, createSwitchNavigator, createAppContainer} from "r
 import WelcomePage from '../page/WelcomePage'
 import HomePage from '../page/HomePage'
 import DetailPage from '../page/DetailPage'
+import WebViewPage from '../page/WebViewPage'
+import AboutPage from '../page/about/AboutPage'
 import {connect} from 'react-redux'
 import {createReactNavigationReduxMiddleware, createReduxContainer} from 'react-navigation-redux-helpers'
 import FetchDemo from '../page/FetchDemoPage'
@@ -30,18 +32,18 @@ const MainNavigator = createStackNavigator({
             header: null, // 禁用 StackNavigator的 Navigation Bar
         }
     },
-    FetchDemoPage: {
-        screen: FetchDemo,
+    WebViewPage: {
+        screen: WebViewPage,
         navigationOptions: {
-            header: null, // 禁用 StackNavigator的 Navigation Bar
+            header: null,
         }
     },
-    DataStoreDemoPage: {
-        screen: DataStoreDemoPage,
+    AboutPage: {
+        screen: AboutPage,
         navigationOptions: {
-            header: null, // 禁用 StackNavigator的 Navigation Bar
+            header: null,
         }
-    },
+    }
 
 })
 
