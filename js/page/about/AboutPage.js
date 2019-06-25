@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {Platform,Button, StyleSheet, Text, View, ScrollView, TouchableOpacity} from 'react-native';
+import {Platform,Button, StyleSheet, Text, View, ScrollView, TouchableOpacity, Linking} from 'react-native';
 import NavigationUtil from '../../navigator/NavigationUtil'
 import NavigationBar from '../../common/NavigationBar'
 import Octicons from 'react-native-vector-icons/Octicons'
@@ -37,7 +37,22 @@ export default class AboutPage extends Component<Props> {
                 params.title = '教程';
                 params.url = 'https://coding.m.imooc.com/classindex.html?cid=304';
                 break;
+            case MORE_MENU.Feedback:
+                const url = 'mailto://crazycodebody@gmail.com'
+                Linking.canOpenURL(url)
+                    .then(support => {
+                        if (!support) {
+                            console.log('Can\'t handle url:' + url)
+                        } else {
+                            Linking.openURL(url)
+                        }
+                    })
+                    .catch(e => {
+                        console.log('An error occurred', e);
+                    })
+
         }
+
         if (RouteName) {
             NavigationUtil.goPage(params, RouteName);
         }
