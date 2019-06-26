@@ -22,10 +22,11 @@ export default class AboutPage extends Component<Props> {
         this.aboutCommon = new AboutCommon({
             ...this.params,
             navigation: this.props.navigation,
-            flagAbout: FLAG_ABOUT.flag_about_me,
+            flagAbout: FLAG_ABOUT.flag_about,
         }, data => this.setState({...data}));
         this.state = {
             data: config,
+
         }
     }
     onClick(menu) {
@@ -51,6 +52,9 @@ export default class AboutPage extends Component<Props> {
                         console.log('An error occurred', e);
                     })
 
+            case MORE_MENU.About_Author:
+                RouteName = 'AboutMePage'
+                break
         }
 
         if (RouteName) {
@@ -60,6 +64,7 @@ export default class AboutPage extends Component<Props> {
     getItem(menu) {
         return ViewUtil.getMenuItem(() => this.onClick(menu), menu, THEME_COLOR)
     }
+
     render() {
         const content = <View>
             {this.getItem(MORE_MENU.Tutorial)}

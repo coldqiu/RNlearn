@@ -28,6 +28,9 @@ export default class MyPage extends Component<Props> {
                 RouteName = 'AboutPage';
                 break;
             }
+            case MORE_MENU.About_Author:
+                RouteName = 'AboutMePage'
+                break
         }
         if (RouteName) {
             NavigationUtil.goPage(params, RouteName);

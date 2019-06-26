@@ -96,12 +96,7 @@ export default class AboutCommon {
                     {params.name}
                 </Text>
                 <Text style={ styles.sectionTitleText }>
-                    Talks by Rich Hickey; CTO of Cognitec, Creator of Clojure
-                    Talks by Rich Hickey; CTO of Cognitec, Creator of Clojure
-                    Talks by Rich Hickey; CTO of Cognitec, Creator of Clojure
-                    Talks by Rich Hickey; CTO of Cognitec, Creator of Clojure
-                    Talks by Rich Hickey; CTO of Cognitec, Creator of Clojure
-                    Talks by Rich Hickey; CTO of Cognitec, Creator of Clojure
+                    {params.description}
                 </Text>
             </View>
         )
