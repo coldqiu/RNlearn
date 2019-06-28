@@ -9,6 +9,7 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
 import {MORE_MENU} from '../common/MORE_MENU'
 import GlobalStyles from '../res/style/GlobalStyles'
 import ViewUtil from "../util/ViewUtil";
+import {FLAG_LANGUAGE} from "../expand/dao/LanguageDao";
 
 
 type Props = {};
@@ -30,6 +31,15 @@ export default class MyPage extends Component<Props> {
             }
             case MORE_MENU.About_Author:
                 RouteName = 'AboutMePage'
+                break
+            case MORE_MENU.Custom_Key:
+            case MORE_MENU.Custom_Language:
+            case MORE_MENU.Remove_Key:
+                console.log("menu:", menu)
+                RouteName: 'CustomKeyPage'
+                RouteName = 'CustomKeyPage';
+                params.isRmoveKey = menu === MORE_MENU.Remove_Key
+                params.flag = menu !== MORE_MENU.Custom_Language ? FLAG_LANGUAGE.flag_key : FLAG_LANGUAGE.flag_language
                 break
         }
         if (RouteName) {

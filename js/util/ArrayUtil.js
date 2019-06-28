@@ -11,4 +11,20 @@ export default class ArrayUtil {
         }
         return true;
     }
+
+    /**
+     * 更新数组，若item已存，则将其从数组中删除，反之将其添加的到数组中
+     * @param array
+     * @param item
+     */
+    static updataArray(array, item) {
+        for (let i = 0, len = array.length; i < len; i++) {
+            let temp = array[i]
+            if (item === temp) {
+                array.splice(i, 1)
+                return
+            }
+        }
+        array.push(item)
+    }
 }

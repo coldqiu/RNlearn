@@ -26,7 +26,7 @@ class PopularPage extends Component<Props> {
         // this.tabNames = ['JavaScript', 'Android', 'React', 'Webpack', 'React Native'];
         const {onLoadLanguage} = this.props
         onLoadLanguage(FLAG_LANGUAGE.flag_key)
-        console.log("this.props-PopularPage", this.props)
+        // console.log("this.props-PopularPage", this.props)
 
     }
     _genTabs() {
@@ -47,7 +47,7 @@ class PopularPage extends Component<Props> {
 
     render() {
         const {keys} = this.props
-        console.log("keys", keys)
+        // console.log("keys", keys)
         let statusBar = {
             backGroundColor: THEME_COLOR,
             barStyle: 'light-content',
@@ -69,7 +69,8 @@ class PopularPage extends Component<Props> {
                     },
                     indicatorStyle: styles.indicatorStyle, // 标签指示器的样式
                     labelStyle: styles.labelStyle // 文字的样式
-                }
+                },
+                lazy: true
             }
         )) : null
 

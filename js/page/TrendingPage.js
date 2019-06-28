@@ -32,7 +32,7 @@ class TrendingPage extends Component<Props> {
         const {onLoadLanguage} = this.props
         onLoadLanguage(FLAG_LANGUAGE.flag_language)
         this.preKeys = []
-        console.log("this.props-TrendingPage", this.props)
+        // console.log("this.props-TrendingPage", this.props)
     }
     _genTabs() {
         const {keys} = this.props // 执行了onLoadLanguage() 将获取的数据放入了props?
@@ -101,7 +101,8 @@ class TrendingPage extends Component<Props> {
                         },
                         indicatorStyle: styles.indicatorStyle, // 标签指示器的样式
                         labelStyle: styles.labelStyle // 文字的样式
-                    }
+                    },
+                    lazy: true
                 }
             ))
         }
@@ -109,8 +110,8 @@ class TrendingPage extends Component<Props> {
     }
     render() {
         const {keys} = this.props
-        console.log("this.props.at.render()", this.props)
-        console.log("keys", keys)
+        // console.log("this.props.at.render()", this.props)
+        // console.log("keys", keys)
         let statusBar = {
             backGroundColor: THEME_COLOR,
             barStyle: 'light-content',
