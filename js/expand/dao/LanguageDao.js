@@ -1,6 +1,6 @@
 import {AsyncStorage,} from 'react-native';
-import langs from '../../res/data/langs';
-import keys from '../../res/data/keys';
+import langs from '../../res/data/langs.json';
+import keys from '../../res/data/keys.json';
 
 // keys 是一个数组，每个元素的是一个对象，最热模块的标签数据
 // {
@@ -25,7 +25,6 @@ export default class LanguageDao {
     constructor(flag) {
         this.flag = flag // 用于标识 “最热:flag_key” “趋势：flag_language”
     }
-
     /***
      * 获取语言或标签
      * @returns {Promise<any> | Promise}

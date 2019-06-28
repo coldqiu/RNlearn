@@ -12,6 +12,8 @@ import NavigationUtil from '../navigator/NavigationUtil'
 import {FLAG_STORAGE} from "../expand/dao/DataStore";
 import FavoriteDao from '../expand/dao/FavoriteDao'
 import FavoriteUtil from "../util/FavoriteUtil";
+import {FLAG_LANGUAGE} from "../expand/dao/LanguageDao";
+import ArrayUtil from '../util/ArrayUtil'
 
 const favoriteDao = new FavoriteDao(FLAG_STORAGE.flag_trending); //
 
@@ -20,21 +22,30 @@ const URL = 'https://github.com/trending/'
 const QUERY_STR = '?since=daily'
 const THEME_COLOR = '#678'
 type Props = {};
-export default class TrendingPage extends Component<Props> {
+class TrendingPage extends Component<Props> {
     constructor(props) {
         super(props);
-        this.tabNames = ['All', 'JavaScript', 'C', 'Python'];
+        // this.tabNames = ['All', 'JavaScript', 'C', 'Python'];
         this.state = {
             timeSpan: TimeSpans[0]
         }
+        const {onLoadLanguage} = this.props
+        onLoadLanguage(FLAG_LANGUAGE.flag_language)
+        this.preKeys = []
+        console.log("this.props-TrendingPage", this.props)
     }
     _genTabs() {
+        const {keys} = this.props // 执行了onLoadLanguage() 将获取的数据放入了props?
+        console.log("_genTabs:",keys)
         const tabs = {};
-        this.tabNames.forEach((item, index) => {
-            tabs[`tab${index}`] = {
-                screen: props => <TrendingTabPage {...props} tabLabel={item} timeSpan={this.state.timeSpan}/>,
-                navigationOptions: {
-                    title: item
+        this.preKeys = keys
+        keys.forEach((item, index) => {
+            if (item.checked) {
+                tabs[`tab${index}`] = {
+                    screen: props => <TrendingTabPage {...props} tabLabel={item.name} timeSpan={this.state.timeSpan}/>,
+                    navigationOptions: {
+                        title: item.name
+                    }
                 }
             }
         })
@@ -76,7 +87,7 @@ export default class TrendingPage extends Component<Props> {
         />
     }
     _tabNav() {
-        if (!this.tabNav) {
+        if (!this.tabNav || !ArrayUtil.isEqual(this.preKeys, this.props.keys)) {
             this.tabNav = createAppContainer(createMaterialTopTabNavigator(
                 this._genTabs(), {
                     tabBarOptions: {
@@ -97,6 +108,9 @@ export default class TrendingPage extends Component<Props> {
         return this.tabNav;
     }
     render() {
+        const {keys} = this.props
+        console.log("this.props.at.render()", this.props)
+        console.log("keys", keys)
         let statusBar = {
             backGroundColor: THEME_COLOR,
             barStyle: 'light-content',
@@ -106,14 +120,25 @@ export default class TrendingPage extends Component<Props> {
             statusBar={statusBar}
             style={{backgroundColor: THEME_COLOR}}
         />
-        const TabNavigator = this._tabNav();
+        const TabNavigator = keys.length ? this._tabNav() : null;
         return <View style={{flex: 1, marginTop: DeviceInfo.isIPhoneX_deprecated ? 30 : 0}}>
             {navigationBar}
-            <TabNavigator/>
+            {TabNavigator &&  <TabNavigator/>}
             {this.renderTrendingDialog()}
         </View>
     }
 }
+const mapTrendingStateToProps = state => ({
+    // keys: state.language.languages
+    // state 是？
+    keys: state.language.languages
+})
+const mapTrendingDispatchToProps = dispatch => ({
+    onLoadLanguage: (flag) => dispatch(actions.onLoadLanguage(flag))
+})
+export default connect(mapTrendingStateToProps, mapTrendingDispatchToProps)(TrendingPage)
+
+
 const pageSize = 10
 class TrendingTab extends Component<Props> {
     // 绑定：订阅popular的action 中的store

@@ -8,7 +8,7 @@
   {
     "path": "iOS",
     "name": "iOS",
-    "checked": true
+    "checked": false
   },
   {
     "path": "react-native",
@@ -18,7 +18,7 @@
   {
     "path": "MySQL",
     "name": "MySQL",
-    "checked": false
+    "checked": true
   },
   {
     "path": "AngularJS",
