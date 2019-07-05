@@ -27,4 +27,32 @@ export default class ArrayUtil {
         }
         array.push(item)
     }
+
+    /**
+     * 移除数组中的元素
+     * @param array
+     * @param item 要移除的item
+     * @param id　要对比的属性， 缺少则比较内存地址
+     */
+    static remove (array, item, id) {
+        if (!array) return
+        for (let i = 0, l = array.length; i < l; i++) {
+            const val = array[i]
+            if (item === val || val[id] && val[id] === item[id]) {
+                array.splice(i, 1)
+            }
+        }
+    }
+    /**
+     * clone 数组
+     * @return Array 新的数组
+     * */
+    static clone(from) {
+        if (!from) return [];
+        let newArray = [];
+        for (let i = 0, l = from.length; i < l; i++) {
+            newArray[i] = from[i];
+        }
+        return newArray;
+    }
 }

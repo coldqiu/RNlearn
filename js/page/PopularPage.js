@@ -70,7 +70,7 @@ class PopularPage extends Component<Props> {
                     indicatorStyle: styles.indicatorStyle, // 标签指示器的样式
                     labelStyle: styles.labelStyle // 文字的样式
                 },
-                lazy: true
+                lazy: true // 懒加载每次只加载一个Tab页面
             }
         )) : null
 

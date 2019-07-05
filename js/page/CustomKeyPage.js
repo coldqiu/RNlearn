@@ -61,6 +61,14 @@ class CustomKeyPage extends Component<Props> {
         let key = flag === FLAG_LANGUAGE.flag_key ? 'keys' : 'languages'
         if (isRemoveKey && !original) {
             // 移除标签不需要原数据, original 是原数据
+            // 如果state中的数据为空则从props中获取
+            return state && state.keys && state.keys.length !== 0 && state.keys || props.language[key].map(val => {
+                return {
+                    // 不直接修改props，而是复制一份
+                    ...val,
+                    checked: false
+                }
+            })
         } else {
             return props.language[key] // 自定义标签，自定义语言；执行这条语句
         }
@@ -88,10 +96,15 @@ class CustomKeyPage extends Component<Props> {
         console.log("this.changeValues-onSave", this.changeValues)
         if (this.changeValues.length === 0) {
             NavigationUtil.goBack(this.props.navigation)
-            console.log("sssss")
             return
         }
-        this.languageDao.save(this.state.keys)
+        let keys // 保存移除之后的结果
+        if (this.isRemoveKey) { // 移除标签的特殊处理
+            for (let i = 0, l = this.changeValues.length; i < l; i++) {
+                ArrayUtil.remove(keys = CustomKeyPage._keys(this.props, true), this.changeValues[i], "name")
+            }
+        }
+        this.languageDao.save(keys ||this.state.keys)
         // 更新 store 使得’最热or趋势模块的的数据更新
         const {onLoadLanguage} = this.props
         onLoadLanguage(this.params.flag)
